@@ -86,7 +86,7 @@
       transition: width 0.4s ease;
     }
 
-    pre {
+    #answer{
       background: rgba(0,0,0,0.35);
       padding: 15px;
       margin-top: 15px;
