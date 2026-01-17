@@ -1,12 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
   <title>AI Interviewer</title>
 
   <style>
+    * { box-sizing: border-box; }
+
     body {
-      font-family: Arial, sans-serif;
-      background: #f4f6f8;
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, #6366f1, #22c55e);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -14,62 +18,88 @@
     }
 
     .box {
-      background: white;
-      width: 650px;
-      padding: 25px;
-      border-radius: 10px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(15px);
+      width: 760px;
+      padding: 30px;
+      border-radius: 18px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
       text-align: center;
+      color: white;
+      animation: fadeIn 0.8s ease;
     }
+
+    h2 { margin-top: 0; }
 
     select, button {
       width: 100%;
-      padding: 10px;
-      margin-top: 6px;
-      border-radius: 6px;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 10px;
       font-weight: bold;
       border: none;
+      cursor: pointer;
+      transition: all 0.25s ease;
     }
 
-    button { cursor: pointer; }
+    select {
+      background: rgba(255,255,255,0.95);
+      color: #111;
+    }
 
-    .start { background: #4f46e5; color: white; }
-    .answer { background: #10b981; color: white; }
-    .next { background: #f59e0b; color: white; }
-    .switch { background: #6366f1; color: white; }
-    .end { background: #ef4444; color: white; }
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+    }
+
+    .start { background: #4f46e5; }
+    .answer { background: #10b981; }
+    .next { background: #f59e0b; }
+    .switch { background: #6366f1; }
+    .end { background: #ef4444; }
 
     #question {
-      background: #eef2ff;
-      padding: 12px;
-      border-radius: 6px;
-      margin-top: 12px;
-      font-weight: bold;
+      background: rgba(255,255,255,0.25);
+      padding: 16px;
+      border-radius: 12px;
+      margin-top: 15px;
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
     }
 
     .progress-container {
       width: 100%;
-      background: #e5e7eb;
+      background: rgba(255,255,255,0.3);
       height: 10px;
-      border-radius: 5px;
-      margin-top: 10px;
+      border-radius: 10px;
+      margin-top: 15px;
+      overflow: hidden;
     }
 
     .progress-bar {
       height: 10px;
-      background: #4f46e5;
+      background: linear-gradient(90deg, #22c55e, #4f46e5);
       width: 0%;
-      border-radius: 5px;
+      transition: width 0.4s ease;
     }
 
     pre {
-      background: #f9fafb;
-      padding: 10px;
-      margin-top: 12px;
-      border-radius: 6px;
+      background: rgba(0,0,0,0.35);
+      padding: 15px;
+      margin-top: 15px;
+      border-radius: 12px;
       text-align: left;
+      min-height: 220px;
       white-space: pre-wrap;
-      min-height: 200px;
+      font-size: 14px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
@@ -77,10 +107,10 @@
 <body>
 
 <div class="box">
-  <h2>🎤 AI Interviewer</h2>
+  <h2>🤖 AI Interviewer</h2>
 
   <select id="category">
-    <option value="">-- Select Interview Category --</option>
+    <option value="">Select Interview Category</option>
     <option value="technical">Technical</option>
     <option value="coding">Coding</option>
     <option value="project">Project</option>
@@ -93,11 +123,11 @@
 
   <div id="question">Select category & start interview</div>
 
-  <button class="start" onclick="startInterview()">Start Interview</button>
+  <button class="start" onclick="startInterview()">🚀 Start Interview</button>
   <button class="answer" onclick="startListening()">🎙 Answer</button>
-  <button class="next" onclick="nextQuestion()">Next Question</button>
-  <button class="switch" onclick="switchCategory()">Switch Category</button>
-  <button class="end" onclick="endInterview()">End Interview</button>
+  <button class="next" onclick="nextQuestion()">➡ Next Question</button>
+  <button class="switch" onclick="switchCategory()">🔄 Switch Category</button>
+  <button class="end" onclick="endInterview()">⛔ End Interview</button>
 
   <pre id="answer"></pre>
 </div>
@@ -155,7 +185,7 @@ function updateProgress() {
 /* ================= FLOW ================= */
 function startInterview() {
   category = document.getElementById("category").value;
-  if (!category) return alert("Select category");
+  if (!category) return alert("Select a category");
 
   questions = [introQuestion];
   index = 0;
@@ -193,63 +223,57 @@ function switchCategory() {
   questions = questionBank[category];
   index = 0;
   introDone = true;
-
-  speak("Category switched. Starting new questions.");
+  speak("Category switched.");
   askQuestion();
 }
 
-/* ================= AI-LIKE EVALUATION (ELABORATED) ================= */
+/* ================= AI REVIEW SYSTEM ================= */
 function evaluateAnswer(answer) {
   const text = answer.toLowerCase();
-  const words = text.split(" ").length;
+  const words = text.trim().split(/\s+/).length;
 
   let score = 0;
   let review = [];
 
-  // Depth
   if (words < 12) {
     score += 2;
-    review.push("Your answer is quite brief and lacks sufficient depth.");
+    review.push("❌ Answer is very brief and lacks depth.");
   } else if (words < 30) {
     score += 4;
-    review.push("You covered the basics, but the explanation could be deeper.");
+    review.push("⚠️ Covers basics but needs deeper explanation.");
   } else {
     score += 6;
-    review.push("Your answer is well-detailed and shows good understanding.");
+    review.push("✅ Well-detailed explanation.");
   }
 
-  // Explanation
   if (text.includes("because") || text.includes("for example") || text.includes("such as")) {
     score += 2;
-    review.push("Good use of reasoning or examples to support your explanation.");
+    review.push("✅ Good use of reasoning/examples.");
   } else {
-    review.push("Try adding examples or reasoning to strengthen your answer.");
+    review.push("⚠️ Add examples or reasoning.");
   }
 
-  // Technical terms
   const keywords = ["process","thread","algorithm","complexity","api","database","server"];
-  const hits = keywords.filter(k => text.includes(k)).length;
-
-  if (hits >= 2) {
+  if (keywords.filter(k => text.includes(k)).length >= 2) {
     score += 2;
-    review.push("You used relevant technical terminology appropriately.");
+    review.push("✅ Used relevant technical terms.");
   } else {
-    review.push("Including more technical terms would improve clarity.");
+    review.push("⚠️ Use more technical terminology.");
   }
 
-  // Confidence
   if (text.includes("maybe") || text.includes("i think")) {
     score -= 1;
-    review.push("Try to sound more confident while answering.");
+    review.push("❌ Sounds unsure. Be confident.");
   } else {
-    review.push("Your tone sounds confident and professional.");
+    review.push("✅ Confident tone.");
   }
 
   score = Math.max(1, Math.min(10, score));
+  const stars = "⭐".repeat(Math.round(score / 2));
 
   return {
     score,
-    feedback: review.join("\n")
+    feedback: `📊 AI ANSWER REVIEW\n--------------------\n${review.join("\n")}\n\n⭐ Rating: ${stars}\n🎯 Final Score: ${score}/10`
   };
 }
 
@@ -277,28 +301,27 @@ function startListening() {
     document.getElementById("answer").innerText =
       "Live:\n" + interim + "\n\nFinal:\n" + finalText;
 
-    if (finalText && event.results[event.results.length - 1].isFinal) {
+    if (event.results[event.results.length - 1].isFinal) {
       recognition.stop();
 
       if (!introDone) {
         introDone = true;
-        speak("That's great. Let's move forward with questions.");
         questions = questionBank[category];
         index = 0;
+        speak("Let's begin the interview.");
         askQuestion();
         return;
       }
 
-      const evaluation = evaluateAnswer(finalText);
+      const evalResult = evaluateAnswer(finalText);
 
       interviewData.push({
         question: questions[index],
-        answer: finalText,
-        score: evaluation.score
+        score: evalResult.score
       });
 
       document.getElementById("answer").innerText +=
-        `\n\n🧠 AI Score: ${evaluation.score}/10\n\n📌 AI Review:\n${evaluation.feedback}`;
+        `\n\n🧠 AI Score: ${evalResult.score}/10\n\n${evalResult.feedback}`;
     }
   };
 }
@@ -310,16 +333,13 @@ function endInterview() {
   let report = "📄 FINAL INTERVIEW REPORT\n\n";
   let total = 0;
 
-  interviewData.forEach((item, i) => {
-    report += `Q${i+1}: ${item.question}\n`;
-    report += `Score: ${item.score}/10\n\n`;
-    total += item.score;
+  interviewData.forEach((q, i) => {
+    report += `Q${i+1}: ${q.question}\nScore: ${q.score}/10\n\n`;
+    total += q.score;
   });
 
-  const avg = (total / (interviewData.length || 1)).toFixed(1);
-
-  report += `⭐ Average Score: ${avg}/10\n`;
-  report += "💡 Overall Tip: Use structured answers with examples and confidence.";
+  report += `⭐ Average Score: ${(total / (interviewData.length || 1)).toFixed(1)}/10\n`;
+  report += "💡 Tip: Structure answers with definition → example → conclusion.";
 
   document.getElementById("question").innerText = "Interview Ended ✅";
   document.getElementById("answer").innerText = report;
