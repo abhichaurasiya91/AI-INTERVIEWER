@@ -87,7 +87,7 @@
     }
 
     #answer{
-      background: rgba(0,0,0,0.35);
+      background: #050505;
       padding: 15px;
       margin-top: 15px;
       border-radius: 12px;
